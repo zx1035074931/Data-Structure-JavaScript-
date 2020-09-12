@@ -1,9 +1,8 @@
 /*
-Hash，一般翻译做散列、杂凑，或音译为哈希，
-是把任意长度的输入（又叫做预映射pre-image）通过散列算法变换成固定长度的输出，该输出就是散列值。
-这种转换是一种压缩映射，也就是，散列值的空间通常远小于输入的空间，
-不同的输入可能会散列成相同的输出，所以不能从散列值来确定唯一的输入值。
-简单的说就是一种将任意长度的消息压缩到某一固定长度的消息摘要的函数。
+碰撞处理
+方法1：开链法
+将哈希表中的每一个存储单元变成数组等可存储多个元素的数据结构。
+遇到冲突时就存在同一位置，而不会覆盖
 */
 function HashTable() {
     this.table = new Array(137)  //  table记录了散列表的内容
@@ -11,6 +10,14 @@ function HashTable() {
     this.betterHash = betterHash  //  更好的散列函数，有效避免碰撞
     this.show = show  //  显示散列表中的内容
     this.add = add  //  向散列表中存入数据
+
+    //  
+    this.buildChains = function () {
+        for (let i = 0; i < this.table.length; i++) {
+            this.table[i] = new Array()
+        }
+    }
+    this.buildChains()
 }
 
 //  散列表的生成规则
@@ -38,21 +45,32 @@ function betterHash(data) {
     return parseInt(total)
 }
 
-function add(data) {
+// add函数用于在哈希表中添加数据，两个参数分别是数据的键与值
+function add(key, data) {
     var pos = this.simpleHash(data)
-    this.table[pos] = data
+    var index = 0
+    if (this.table[pos][index] == undefined) {
+        this.table[pos][index] = data
+        // index++
+    } else {
+        while (this.table[pos][index] != undefined) {
+            index++
+        }
+        this.table[pos][index] = data
+    }
 }
 
 function show() {
     for (let i = 0; i < this.table.length; i++) {
-        if (this.table[i] != undefined) {
+        if (this.table[i][0] != undefined) {
             console.log(i + ' : ' + this.table[i]);
         }
     }
 }
 
 var hTable = new HashTable()
-hTable.add('Hello world0')
-hTable.add('Hello worldas')
-hTable.add('Hello worldds')
+// hTable.buildChains()
+hTable.add('Hello worldcs', 'Hello worldcs')
+hTable.add('Hello worldas', 'Hello worldas')
+hTable.add('Hello worldds', 'Hello worldds')
 hTable.show()
