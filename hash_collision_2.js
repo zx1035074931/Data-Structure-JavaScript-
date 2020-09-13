@@ -1,24 +1,17 @@
 /*
 碰撞处理
-方法1：开链法
-将哈希表中的每一个存储单元变成数组等可存储多个元素的数据结构。
-遇到冲突时就存在同一位置，而不会覆盖
+方法2：开放寻址散列之线性探测法
+当发生碰撞时，检测散列表的下一个位置是否为空，如果为空则存入，不为空则检查下一个位置
 */
 function HashTable() {
-    this.table = new Array(137)  //  table记录了散列表的内容
+    this.table = new Array(137)  //  table记录了散列表的键
+    this.value = []  //  value记录了散列表的值
     this.simpleHash = simpleHash  //  散列函数，生成散列值
     this.betterHash = betterHash  //  更好的散列函数，有效避免碰撞
     this.show = show  //  显示散列表中的内容
     this.add = add  //  向散列表中存入数据
     this.get = get  //  利用键值，从散列表中取值
 
-    //  
-    this.buildChains = function () {
-        for (let i = 0; i < this.table.length; i++) {
-            this.table[i] = new Array()
-        }
-    }
-    this.buildChains()
 }
 
 //  散列表的生成规则
@@ -46,36 +39,55 @@ function betterHash(data) {
     return parseInt(total)
 }
 
-// add函数用于在哈希表中添加数据，两个参数分别是数据的键与值
 function add(key, data) {
     var pos = this.simpleHash(data)
-    var index = 0
-    if (this.table[pos][index] == undefined) {
-        this.table[pos][index] = data
+    if (this.table[pos] == undefined) {
+        this.table[pos] = key
+        this.value[pos] = data
     } else {
-        while (this.table[pos][index] != undefined) {
-            index++
+        while (this.table[pos] != undefined) {
+            pos++
         }
-        this.table[pos][index] = data
+        this.table[pos] = key
+        this.value[pos] = data
     }
 }
 
 function get(key) {
-    return this.table[this.simpleHash(key)]
+    var hash = this.simpleHash(key)
+    if (hash >= 0) {
+        //  该值有可能因为碰撞而向后寻址找空位存储，所以从此位置向后找
+        for (let i = hash; this.table[hash] != undefined; i++) {
+            if (this.table[hash] == key) {
+                return this.value[hash]
+            } else {
+                console.log('未查询到此数据');
+                return undefined
+            }
+        }
+    } else {
+        console.log('hash值计算有误，查询数据出问题了');
+    }
 }
 
 function show() {
     for (let i = 0; i < this.table.length; i++) {
-        if (this.table[i][0] != undefined) {
+        if (this.table[i] != undefined) {
             console.log(i + ' : ' + this.table[i]);
         }
     }
 }
 
-var hTable = new HashTable()
+var hTable = new HashTable()  //  新建类
 //  增添数据
-hTable.add('Hello worldcs', 'Hello worldcs')
+hTable.add('Hello world0', 'Hello world0')
 hTable.add('Hello worldas', 'Hello worldas')
 hTable.add('Hello worldds', 'Hello worldds')
-hTable.show()  //  展示哈希表
-console.log(hTable.get('Hello worldds'));  //  查询数据
+
+//  展示哈希表
+hTable.show()
+
+//  查询数据
+let record1 = hTable.get('Hello worldds')
+console.log(record1);
+
