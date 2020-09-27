@@ -98,25 +98,78 @@ Sort.prototype.insertSort = function () {
     return dataStore2
 }
 
-var arrSort = new Sort(1000)
+/*希尔排序，改进的插入排序*/
+Sort.prototype.shellSort = function () {
+    var dataStore2 = []
+    for (let i = 0; i < this.dataStore.length; i++) {
+        dataStore2[i] = this.dataStore[i];
+    }
+    var h = 1, len = dataStore2.length
+    while (h < len / 3) {
+        h = h * 3 + 1
+    }
+    while(h>=1){
+        for (let i = h; i < len; i++) {
+            for (let j = i; dataStore2[j]<dataStore2[j-h]; j-=h) {
+                this.swap(dataStore2,j,j-h)
+            } 
+        }
+        h=(h-1)/3
+    }
+    return dataStore2
+}
+
+/*快速排序*/
+// Sort.prototype.quickSort = function () {
+//     var dataStore2 = []
+//     for (let i = 0; i < this.dataStore.length; i++) {
+//         dataStore2[i] = this.dataStore[i];
+//     }
+
+//     return dataStore2
+// }
+
+function quickSort(arr) {
+    if(arr.length==0){
+        return []
+    }
+    var left =[],right=[],pivot=arr[0]
+    for (let i = 1; i < arr.length; i++) {
+        if(arr[i]<pivot){
+            left.push(arr[i])
+        }else{
+            right.push(arr[i])
+        }
+    }
+    return quickSort(left).concat(pivot,quickSort(right))
+}
+
+var arrSort = new Sort(100)
 arrSort.setData()
+console.log('original array:')
 arrSort.show()
 
-var start1 = new Date().getTime()
+console.time('bubbleSort')
 var arr1 = arrSort.bubbleSort()
-var stop1 = new Date().getTime()
-arrSort.showArr(arr1)
-console.log(stop1 - start1);
+console.timeEnd('bubbleSort')
+// arrSort.showArr(arr1)
 
-var start2 = new Date().getTime()
+console.time('insertSort')
 var arr2 = arrSort.insertSort()
-var stop2 = new Date().getTime()
-arrSort.showArr(arr2)
-console.log(stop2 - start2);
+console.timeEnd('insertSort')
+// arrSort.showArr(arr2)
 
-var start3 = new Date().getTime()
+console.time('selectSort')
 var arr3 = arrSort.selectSort()
-var stop3 = new Date().getTime()
-arrSort.showArr(arr3)
-console.log(stop3 - start3);
+console.timeEnd('selectSort')
+// arrSort.showArr(arr3)
 
+console.time('shellSort')
+var arr4 = arrSort.shellSort()
+console.timeEnd('shellSort')
+// arrSort.showArr(arr4)
+
+console.time('quickSort')
+var quickArr = quickSort(arrSort.dataStore)
+console.log();
+console.timeEnd('quickSort')
