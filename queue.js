@@ -1,3 +1,4 @@
+/*队列*/
 function Queue() {
     this.dataStore = []
     this.enqueue = enqueue  //向队尾增加元素

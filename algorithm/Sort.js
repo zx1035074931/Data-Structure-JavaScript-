@@ -29,7 +29,8 @@ Sort.prototype.show = function () {
     console.log(temp);
 }
 
-Sort.prototype.showArr = function (arr) {
+// 输出一个数组
+function showArr(arr) {
     var temp = ""
     for (let i = 0; i < arr.length; i++) {
         temp += arr[i] + " "
@@ -108,68 +109,60 @@ Sort.prototype.shellSort = function () {
     while (h < len / 3) {
         h = h * 3 + 1
     }
-    while(h>=1){
+    while (h >= 1) {
         for (let i = h; i < len; i++) {
-            for (let j = i; dataStore2[j]<dataStore2[j-h]; j-=h) {
-                this.swap(dataStore2,j,j-h)
-            } 
+            for (let j = i; dataStore2[j] < dataStore2[j - h]; j -= h) {
+                this.swap(dataStore2, j, j - h)
+            }
         }
-        h=(h-1)/3
+        h = (h - 1) / 3
     }
     return dataStore2
 }
 
-/*快速排序*/
-// Sort.prototype.quickSort = function () {
-//     var dataStore2 = []
-//     for (let i = 0; i < this.dataStore.length; i++) {
-//         dataStore2[i] = this.dataStore[i];
-//     }
-
-//     return dataStore2
-// }
-
 function quickSort(arr) {
-    if(arr.length==0){
+    if (arr.length == 0) {
         return []
     }
-    var left =[],right=[],pivot=arr[0]
+    var left = [], right = [], pivot = arr[0]
     for (let i = 1; i < arr.length; i++) {
-        if(arr[i]<pivot){
+        if (arr[i] < pivot) {
             left.push(arr[i])
-        }else{
+        } else {
             right.push(arr[i])
         }
     }
-    return quickSort(left).concat(pivot,quickSort(right))
+    return quickSort(left).concat(pivot, quickSort(right))
 }
 
-var arrSort = new Sort(100)
-arrSort.setData()
+var arrSort = new Sort(100) // 声明对象
+arrSort.setData()           // 为对象赋上数值
 console.log('original array:')
-arrSort.show()
+// arrSort.show()
 
 console.time('bubbleSort')
 var arr1 = arrSort.bubbleSort()
 console.timeEnd('bubbleSort')
-// arrSort.showArr(arr1)
+// showArr(arr1)
 
 console.time('insertSort')
 var arr2 = arrSort.insertSort()
 console.timeEnd('insertSort')
-// arrSort.showArr(arr2)
+// showArr(arr2)
 
 console.time('selectSort')
 var arr3 = arrSort.selectSort()
 console.timeEnd('selectSort')
-// arrSort.showArr(arr3)
+// showArr(arr3)
 
 console.time('shellSort')
 var arr4 = arrSort.shellSort()
 console.timeEnd('shellSort')
-// arrSort.showArr(arr4)
+// showArr(arr4)
 
 console.time('quickSort')
 var quickArr = quickSort(arrSort.dataStore)
 console.log();
 console.timeEnd('quickSort')
+
+module.exports={Sort, showArr}
